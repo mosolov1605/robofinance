@@ -51,6 +51,15 @@ public class Address extends BaseEntity {
                 .build();
     }
 
+    public void applyToObject(AddressSource source) {
+        this.country = source.getCountry();
+        this.region = source.getRegion();
+        this.city = source.getCity();
+        this.street = source.getStreet();
+        this.house = source.getHouse();
+        this.flat = source.getFlat();
+    }
+
     @PreUpdate
     public void setLastUpdate() {
         this.modified = Instant.now();
