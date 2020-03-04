@@ -13,7 +13,7 @@ sourceCompatibility = JavaVersion.VERSION_11
 targetCompatibility = JavaVersion.VERSION_11
 
 ext {
-    springBootVersion = "2.2.4.RELEASE"
+    springBootVersion = "2.2.5.RELEASE"
     springCloudVersion = "Hoxton.RELEASE"
 }
 
@@ -30,9 +30,8 @@ compileJava {
 }
 
 repositories {
-    maven { url 'https://artifactory.skblab.ru/artifactory/maven' }
-//    mavenLocal()
-//    mavenCentral()
+    mavenLocal()
+    mavenCentral()
 }
 
 dependencies {
@@ -50,8 +49,7 @@ dependencies {
 
     testCompileOnly "org.projectlombok:lombok"
     testAnnotationProcessor "org.projectlombok:lombok"
-    testImplementation "org.mockito:mockito-junit-jupiter",
-            "ru.skblab.dbo.test:dbo-test-support:0.1.0.ALPHA"
+    testImplementation "org.mockito:mockito-junit-jupiter"
 
     testImplementation("org.springframework.boot:spring-boot-starter-test") {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'

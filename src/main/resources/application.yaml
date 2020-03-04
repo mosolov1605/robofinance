@@ -1,0 +1,36 @@
+spring:
+  application:
+    name: news
+  main:
+    banner-mode: off
+  datasource:
+    url: jdbc:postgresql://${postgres.host}:${postgres.port}/${postgres.db-name}
+    username: ${postgres.username}
+    password: ${postgres.password}
+    hikari:
+      minimum-idle: 1
+      maximum-pool-size: 5
+  jpa:
+    hibernate:
+      ddl-auto: validate
+    properties:
+      hibernate:
+        default_schema: ${postgres.schema}
+        jdbc:
+          lob:
+            non_contextual_creation: true
+          time_zone: UTC
+    open-in-view: false
+  mvc:
+    locale: ru_RU
+  batch:
+    initialize-schema: never
+  liquibase:
+    change-log: classpath:db/changelog/changelog.xml
+    enabled: false
+  resources:
+    add-mappings: true
+
+management:
+  endpoints:
+    web.exposure.include: info, health, prometheus
