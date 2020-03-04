@@ -1,9 +1,11 @@
 package ru.mosolov.robofinance.domain;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import ru.mosolov.robofinance.domain.dto.AddressSource;
-import ru.mosolov.robofinance.service.dto.AddressInput;
 import ru.mosolov.robofinance.support.BaseEntity;
 
 import javax.persistence.Column;
@@ -21,7 +23,7 @@ import static lombok.AccessLevel.PRIVATE;
 @AllArgsConstructor
 @Table(name = "address")
 @FieldDefaults(level = PRIVATE)
-public class Address extends BaseEntity {
+public class Address extends BaseEntity implements AddressSource {
 
     @Column
     String country;
@@ -36,7 +38,7 @@ public class Address extends BaseEntity {
     @Column
     String flat;
     @Column
-    Instant created = Instant.now();
+    final Instant created = Instant.now();
     @Column
     Instant modified = Instant.now();
 

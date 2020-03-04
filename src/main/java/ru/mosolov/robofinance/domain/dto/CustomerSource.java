@@ -5,6 +5,7 @@ import ru.mosolov.robofinance.utils.Gender;
 
 public interface CustomerSource {
 
+    Long getId();
     String getFirstName();
     String getLastName();
     String getMiddleName();

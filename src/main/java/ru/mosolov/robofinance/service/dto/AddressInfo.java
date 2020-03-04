@@ -26,6 +26,7 @@ public class AddressInfo {
 
     public static AddressInfo applyTo(final Address address) {
         return AddressInfo.builder()
+                .id(address.getId())
                 .country(address.getCountry())
                 .region(address.getRegion())
                 .city(address.getCity())

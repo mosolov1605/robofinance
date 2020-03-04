@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import ru.mosolov.robofinance.domain.Address;
 import ru.mosolov.robofinance.domain.dto.AddressSource;
 import ru.mosolov.robofinance.repository.AddressRepository;
@@ -22,6 +23,7 @@ public class AddressServiceImpl implements AddressService {
     private final AddressRepository addressRepository;
 
     @Override
+    @Transactional
     public Long save(final AddressSource source) {
         List<Long> id = new ArrayList<>();
         Optional.of(source)
@@ -30,10 +32,14 @@ public class AddressServiceImpl implements AddressService {
                 .ifPresentOrElse(d -> {
                     d.applyToObject(source);
                     id.add(addressRepository.save(d).getId());
-                }, () -> {
-                    id.add(addressRepository.save(Address.applyTo(source)).getId());
-                });
+                }, () -> id.add(addressRepository.save(Address.applyTo(source)).getId()));
         return id.get(0);
+    }
+
+    @Override
+    @Transactional
+    public void saveAll(Iterable<Address> addresses) {
+        addressRepository.saveAll(addresses);
     }
 
     @Override
@@ -52,23 +58,21 @@ public class AddressServiceImpl implements AddressService {
     @Override
     public AddressInfo findBySearch(final AddressSearch search) {
         AtomicReference<AddressInfo> info = new AtomicReference<>();
-        Optional.of(search).map(AddressSearch::getFlat).ifPresentOrElse(e -> {
-            info.set(Optional.of(addressRepository.findByCountryAndRegionAndCityAndStreetAndHouseAndFlat(
-                    search.getCountry(), search.getRegion(), search.getCity(),
-                    search.getStreet(), search.getHouse(), search.getFlat()
-            )).map(AddressInfo::applyTo).orElseThrow());
-        }, () -> {
-            info.set(Optional.of(addressRepository.findByCountryAndRegionAndCityAndStreetAndHouseAndFlatIsNull(
-                    search.getCountry(), search.getRegion(), search.getCity(),
-                    search.getStreet(), search.getHouse()
-            )).map(AddressInfo::applyTo).orElseThrow());
-        });
+        Optional.of(search).map(AddressSearch::getFlat).ifPresentOrElse(e -> info.set(Optional.of(addressRepository.findByCountryAndRegionAndCityAndStreetAndHouseAndFlat(
+                search.getCountry(), search.getRegion(), search.getCity(),
+                search.getStreet(), search.getHouse(), search.getFlat()
+        )).map(AddressInfo::applyTo).orElseThrow()), () -> info.set(Optional.of(addressRepository.findByCountryAndRegionAndCityAndStreetAndHouseAndFlatIsNull(
+                search.getCountry(), search.getRegion(), search.getCity(),
+                search.getStreet(), search.getHouse()
+        )).map(AddressInfo::applyTo).orElseThrow()));
         return info.get();
     }
 
     @Override
+    @Transactional
     public Long remove(Long id) {
-
-        return addressRepository.delete(Optional.of(id).flatMap(addressRepository::findById).orElseThrow());
+        var address = Optional.of(id).flatMap(addressRepository::findById).orElseThrow();
+        addressRepository.delete(address);
+        return address.getId();
     }
 }

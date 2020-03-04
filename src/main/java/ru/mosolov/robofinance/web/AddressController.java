@@ -1,6 +1,7 @@
 package ru.mosolov.robofinance.web;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import ru.mosolov.robofinance.service.AddressService;
@@ -9,7 +10,6 @@ import ru.mosolov.robofinance.service.dto.AddressInput;
 import ru.mosolov.robofinance.service.dto.AddressSearch;
 
 import javax.validation.Valid;
-import java.util.List;
 
 @RestController
 @RequestMapping("/address")
@@ -24,7 +24,7 @@ public class AddressController {
     }
 
     @GetMapping(path = "/list")
-    public List<AddressInfo> getAddresses(final Pageable pageable){
+    public Page<AddressInfo> getAddresses(final Pageable pageable){
         return addressService.findAll(pageable);
     }
 

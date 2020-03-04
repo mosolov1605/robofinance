@@ -1,6 +1,7 @@
 package ru.mosolov.robofinance.web;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.web.bind.annotation.*;
 import ru.mosolov.robofinance.service.CustomerService;
@@ -24,7 +25,7 @@ public class CustomerController {
     }
 
     @GetMapping(path = "/list")
-    public List<CustomerInfo> getCustomers(final Pageable pageable){
+    public Page<CustomerInfo> getCustomers(final Pageable pageable){
         return customerService.findAll(pageable);
     }
 

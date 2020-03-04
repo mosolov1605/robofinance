@@ -6,7 +6,7 @@ plugins {
 }
 
 description = "robofinance"
-group = "ru.mosolov.robotest"
+group = "ru.mosolov"
 version = '0.0.1'
 
 sourceCompatibility = JavaVersion.VERSION_11
