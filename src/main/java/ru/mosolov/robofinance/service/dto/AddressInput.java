@@ -10,6 +10,7 @@ import static lombok.AccessLevel.PRIVATE;
 @FieldDefaults(level = PRIVATE)
 public class AddressInput implements AddressSource {
 
+    Long id;
     String country;
     String region;
     String city;

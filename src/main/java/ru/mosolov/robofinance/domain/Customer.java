@@ -14,7 +14,6 @@ import static lombok.AccessLevel.PRIVATE;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@RequiredArgsConstructor
 @Table(name = "customer")
 @FieldDefaults(level = PRIVATE)
 public class Customer extends BaseEntity {
@@ -27,6 +26,7 @@ public class Customer extends BaseEntity {
     String middleName;
     @Column (name = "sex", nullable = false)
     Gender gender;
+
 
     @ManyToOne
     @JoinColumn(name = "actual_address_id", nullable = false)

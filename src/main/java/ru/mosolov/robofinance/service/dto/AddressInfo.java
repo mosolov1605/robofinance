@@ -8,7 +8,7 @@ import static lombok.AccessLevel.PRIVATE;
 
 @Data
 @FieldDefaults(level = PRIVATE)
-public class AddressInfo implements AddressSource {
+public class AddressInfo {
 
     String country;
     String region;

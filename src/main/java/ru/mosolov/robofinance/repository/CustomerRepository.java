@@ -5,6 +5,6 @@ import org.springframework.stereotype.Repository;
 import ru.mosolov.robofinance.domain.Customer;
 
 @Repository
-public interface CustomerRepository extends JpaRepository<Long, Customer> {
+public interface CustomerRepository extends JpaRepository<Customer, Long> {
 
 }
