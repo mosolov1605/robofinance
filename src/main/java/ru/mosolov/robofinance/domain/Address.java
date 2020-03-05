@@ -40,6 +40,7 @@ public class Address extends BaseEntity implements AddressSource {
     @Column
     final Instant created = Instant.now();
     @Column
+    @Builder.Default
     Instant modified = Instant.now();
 
     public static Address applyTo(AddressSource source) {

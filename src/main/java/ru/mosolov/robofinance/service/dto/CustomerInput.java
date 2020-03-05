@@ -1,6 +1,5 @@
 package ru.mosolov.robofinance.service.dto;
 
-import lombok.AccessLevel;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import ru.mosolov.robofinance.domain.Address;

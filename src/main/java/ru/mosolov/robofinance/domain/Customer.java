@@ -8,10 +8,12 @@ import lombok.experimental.FieldDefaults;
 import lombok.experimental.FieldNameConstants;
 import ru.mosolov.robofinance.domain.dto.CustomerSource;
 import ru.mosolov.robofinance.support.BaseEntity;
+import ru.mosolov.robofinance.support.GenderConverter;
 import ru.mosolov.robofinance.utils.Gender;
 
 import javax.persistence.*;
 
+import static javax.persistence.EnumType.STRING;
 import static lombok.AccessLevel.PRIVATE;
 
 @Getter
@@ -30,10 +32,10 @@ public class Customer extends BaseEntity implements CustomerSource {
     String lastName;
     @Column
     String middleName;
-    @Column (name = "sex", nullable = false)
-    @Enumerated(EnumType.STRING)
-    Gender gender;
 
+    @Convert(converter = GenderConverter.class)
+    @Column (name = "sex", nullable = false)
+    Gender gender;
 
     @ManyToOne
     @JoinColumn(name = "actual_address_id", nullable = false)

@@ -9,12 +9,14 @@ import ru.mosolov.robofinance.domain.Address;
 import ru.mosolov.robofinance.domain.Customer;
 import ru.mosolov.robofinance.domain.dto.CustomerSource;
 import ru.mosolov.robofinance.repository.CustomerRepository;
+import ru.mosolov.robofinance.service.dto.AddressSearch;
 import ru.mosolov.robofinance.service.dto.CustomerInfo;
 import ru.mosolov.robofinance.service.dto.CustomerSearch;
 
 import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
+import java.util.function.Function;
 
 @Service
 @RequiredArgsConstructor
@@ -29,8 +31,8 @@ public class CustomerServiceImpl implements CustomerService {
         final long[] id = new long[1];
         AtomicReference<Address> addressAtomicReference = new AtomicReference<>();
         AtomicReference<Address> regAddressAtomicReference = new AtomicReference<>();
-        resolveAddress(source, addressAtomicReference);
-        resolveAddress(source, regAddressAtomicReference);
+        resolveAddress(source, addressAtomicReference, CustomerSource::getAddress);
+        resolveAddress(source, regAddressAtomicReference, CustomerSource::getRegAddress);
         var address = addressAtomicReference.get();
         var regAddress = regAddressAtomicReference.get();
         addressService.saveAll(List.of(address, regAddress));
@@ -39,10 +41,10 @@ public class CustomerServiceImpl implements CustomerService {
                 .map(CustomerSource::getId)
                 .flatMap(customerRepository::findById)
                 .ifPresentOrElse(d -> {
-                    d.applyToObject(customer);
-                    id[0] = customerRepository.save(d).getId();
-                }
-                , () -> id[0] = customerRepository.save(customer).getId());
+                            d.applyToObject(customer);
+                            id[0] = customerRepository.save(d).getId();
+                        }
+                        , () -> id[0] = customerRepository.save(customer).getId());
         return id[0];
     }
 
@@ -58,35 +60,43 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public List<CustomerInfo> findBySearch(CustomerSearch search) {
-
-
-        return null;
+        return customerRepository.findBySearch(search);
     }
 
     @Override
+    @Transactional
     public Long remove(Long id) {
-        return null;
+        var customer = Optional.of(id).flatMap(customerRepository::findById).orElseThrow();
+        customerRepository.delete(customer);
+        return customer.getId();
     }
 
-    private void resolveAddress(CustomerSource source, AtomicReference<Address> actualAddress) {
-
+    private void resolveAddress(CustomerSource source, AtomicReference<Address> address,
+                                Function<CustomerSource, Address> function) {
         final boolean[] exist = new boolean[1];
         Optional.of(source)
-                .map(CustomerSource::getAddress)
+                .map(function)
                 .map(Address::getId)
-                .ifPresent(e -> {
-                    var findingAddress = addressService.find(e);
+                .ifPresent(id -> {
+                    var findingAddress = addressService.find(id);
                     Optional.of(findingAddress)
-                            .ifPresent(d -> {
-                                actualAddress.set(source.getAddress());
+                            .ifPresentOrElse(d -> {
+                                address.set(function.apply(source));
                                 exist[0] = true;
+                            }, () -> {
+                                var findingAddressBySearch = addressService
+                                        .findBySearch(AddressSearch.applyTo(function.apply(source)));
+                                Optional.of(findingAddressBySearch)
+                                        .ifPresent(s -> {
+                                            s.
+                                            address.
+                                        });
                             });
                 });
 
         if (exist[0]) {
             return;
         }
-
-        actualAddress.set(Address.applyTo(source.getAddress()));
+        address.set(Address.applyTo(function.apply(source)));
     }
 }

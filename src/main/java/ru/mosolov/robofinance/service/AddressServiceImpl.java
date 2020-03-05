@@ -11,8 +11,6 @@ import ru.mosolov.robofinance.repository.AddressRepository;
 import ru.mosolov.robofinance.service.dto.AddressInfo;
 import ru.mosolov.robofinance.service.dto.AddressSearch;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicReference;
 
