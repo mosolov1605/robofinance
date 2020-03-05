@@ -25,15 +25,15 @@ public class AddressServiceImpl implements AddressService {
     @Override
     @Transactional
     public Long save(final AddressSource source) {
-        List<Long> id = new ArrayList<>();
+        final long[] id = new long[1];
         Optional.of(source)
                 .map(AddressSource::getId)
                 .flatMap(addressRepository::findById)
                 .ifPresentOrElse(d -> {
                     d.applyToObject(source);
-                    id.add(addressRepository.save(d).getId());
-                }, () -> id.add(addressRepository.save(Address.applyTo(source)).getId()));
-        return id.get(0);
+                    id[0] = addressRepository.save(d).getId();
+                }, () -> id[0] = addressRepository.save(Address.applyTo(source)).getId());
+        return id[0];
     }
 
     @Override

@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.FieldNameConstants;
 import ru.mosolov.robofinance.domain.dto.CustomerSource;
 import ru.mosolov.robofinance.support.BaseEntity;
 import ru.mosolov.robofinance.utils.Gender;
@@ -18,6 +19,7 @@ import static lombok.AccessLevel.PRIVATE;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldNameConstants
 @Table(name = "customer")
 @FieldDefaults(level = PRIVATE)
 public class Customer extends BaseEntity implements CustomerSource {
