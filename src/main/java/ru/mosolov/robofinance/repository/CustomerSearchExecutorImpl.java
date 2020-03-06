@@ -3,7 +3,6 @@ package ru.mosolov.robofinance.repository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.util.StringUtils;
 import ru.mosolov.robofinance.domain.Customer;
-import ru.mosolov.robofinance.domain.Customer.Fields;
 import ru.mosolov.robofinance.service.dto.CustomerInfo;
 import ru.mosolov.robofinance.service.dto.CustomerSearch;
 import ru.mosolov.robofinance.support.BaseEntity;
@@ -44,13 +43,13 @@ public class CustomerSearchExecutorImpl implements CustomerSearchExecutor {
                         CustomerSearch search) {
         List<Predicate> predicates = new ArrayList<>();
         if (!StringUtils.isEmpty(search.getFirstName())) {
-            predicates.add(cb.and(cb.equal(customerRoot.get(Fields.firstName), search.getFirstName())));
+            predicates.add(cb.and(cb.equal(customerRoot.get(Customer.Fields.firstName), search.getFirstName())));
         }
         if (!StringUtils.isEmpty(search.getMiddleName())) {
-            predicates.add(cb.and(cb.equal(customerRoot.get(Fields.middleName), search.getMiddleName())));
+            predicates.add(cb.and(cb.equal(customerRoot.get(Customer.Fields.middleName), search.getMiddleName())));
         }
         if (!StringUtils.isEmpty(search.getLastName())) {
-            predicates.add(cb.and(cb.equal(customerRoot.get(Fields.lastName), search.getLastName())));
+            predicates.add(cb.and(cb.equal(customerRoot.get(Customer.Fields.lastName), search.getLastName())));
         }
         query.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
     }
