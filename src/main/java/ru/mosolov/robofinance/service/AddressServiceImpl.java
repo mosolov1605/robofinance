@@ -55,15 +55,7 @@ public class AddressServiceImpl implements AddressService {
 
     @Override
     public AddressInfo findBySearch(final AddressSearch search) {
-        AtomicReference<AddressInfo> info = new AtomicReference<>();
-        Optional.of(search).map(AddressSearch::getFlat).ifPresentOrElse(e -> info.set(Optional.of(addressRepository.findByCountryAndRegionAndCityAndStreetAndHouseAndFlat(
-                search.getCountry(), search.getRegion(), search.getCity(),
-                search.getStreet(), search.getHouse(), search.getFlat()
-        )).map(AddressInfo::applyTo).orElseThrow()), () -> info.set(Optional.of(addressRepository.findByCountryAndRegionAndCityAndStreetAndHouseAndFlatIsNull(
-                search.getCountry(), search.getRegion(), search.getCity(),
-                search.getStreet(), search.getHouse()
-        )).map(AddressInfo::applyTo).orElseThrow()));
-        return info.get();
+        return Optional.ofNullable(addressRepository.findBySearch(search)).map(AddressInfo::applyTo).orElse(null);
     }
 
     @Override

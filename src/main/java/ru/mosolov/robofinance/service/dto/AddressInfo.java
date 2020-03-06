@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import ru.mosolov.robofinance.domain.Address;
+import ru.mosolov.robofinance.domain.dto.AddressSource;
 
 import static lombok.AccessLevel.PRIVATE;
 
@@ -14,7 +15,7 @@ import static lombok.AccessLevel.PRIVATE;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = PRIVATE)
-public class AddressInfo {
+public class AddressInfo implements AddressSource {
 
     Long id;
     String country;

@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import lombok.experimental.FieldNameConstants;
 import ru.mosolov.robofinance.domain.dto.AddressSource;
 import ru.mosolov.robofinance.support.BaseEntity;
 
@@ -21,6 +22,7 @@ import static lombok.AccessLevel.PRIVATE;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldNameConstants
 @Table(name = "address")
 @FieldDefaults(level = PRIVATE)
 public class Address extends BaseEntity implements AddressSource {

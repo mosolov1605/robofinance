@@ -13,7 +13,9 @@ import javax.persistence.PersistenceContext;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.util.ArrayList;
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -40,16 +42,16 @@ public class CustomerSearchExecutorImpl implements CustomerSearchExecutor {
     private void filter(CriteriaQuery<?> query, Root<Customer> customerRoot,
                         CriteriaBuilder cb,
                         CustomerSearch search) {
-
+        List<Predicate> predicates = new ArrayList<>();
         if (!StringUtils.isEmpty(search.getFirstName())) {
-            cb.and(cb.equal(customerRoot.get(Fields.firstName), search.getFirstName()));
+            predicates.add(cb.and(cb.equal(customerRoot.get(Fields.firstName), search.getFirstName())));
         }
         if (!StringUtils.isEmpty(search.getMiddleName())) {
-            cb.and(cb.equal(customerRoot.get(Fields.middleName), search.getMiddleName()));
+            predicates.add(cb.and(cb.equal(customerRoot.get(Fields.middleName), search.getMiddleName())));
         }
         if (!StringUtils.isEmpty(search.getLastName())) {
-            cb.and(cb.equal(customerRoot.get(Fields.lastName), search.getLastName()));
+            predicates.add(cb.and(cb.equal(customerRoot.get(Fields.lastName), search.getLastName())));
         }
-        query.where(cb.and());
+        query.where(cb.and(predicates.toArray(new Predicate[predicates.size()])));
     }
 }

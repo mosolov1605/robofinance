@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.mosolov.robofinance.domain.Address;
 import ru.mosolov.robofinance.domain.Customer;
 import ru.mosolov.robofinance.domain.dto.CustomerSource;
+import ru.mosolov.robofinance.repository.AddressRepository;
 import ru.mosolov.robofinance.repository.CustomerRepository;
 import ru.mosolov.robofinance.service.dto.AddressSearch;
 import ru.mosolov.robofinance.service.dto.CustomerInfo;
@@ -23,7 +24,8 @@ import java.util.function.Function;
 public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerRepository customerRepository;
-    private final AddressService addressService;
+    private final AddressRepository addressRepository;
+//    private final AddressService addressService;
 
     @Override
     @Transactional
@@ -35,7 +37,7 @@ public class CustomerServiceImpl implements CustomerService {
         resolveAddress(source, regAddressAtomicReference, CustomerSource::getRegAddress);
         var address = addressAtomicReference.get();
         var regAddress = regAddressAtomicReference.get();
-        addressService.saveAll(List.of(address, regAddress));
+        addressRepository.saveAll(List.of(address, regAddress));
         var customer = Customer.applyTo(source, address, regAddress);
         Optional.of(customer)
                 .map(CustomerSource::getId)
@@ -78,18 +80,15 @@ public class CustomerServiceImpl implements CustomerService {
                 .map(function)
                 .map(Address::getId)
                 .ifPresent(id -> {
-                    var findingAddress = addressService.find(id);
-                    Optional.of(findingAddress)
+                    Optional.of(addressRepository.findById(id))
                             .ifPresentOrElse(d -> {
-                                address.set(function.apply(source));
+                                address.set(d.get());
                                 exist[0] = true;
                             }, () -> {
-                                var findingAddressBySearch = addressService
-                                        .findBySearch(AddressSearch.applyTo(function.apply(source)));
-                                Optional.of(findingAddressBySearch)
+                                Optional.of(addressRepository.findBySearch(AddressSearch.applyTo(function.apply(source))))
                                         .ifPresent(s -> {
-                                            s.
-                                            address.
+                                            address.set(s);
+                                            exist[0] = true;
                                         });
                             });
                 });
