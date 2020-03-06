@@ -4,20 +4,28 @@ services:
     image: postgres
     restart: always
     environment:
-      POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: docker
-      POSTGRES_HOST: db
-      POSTGRES_PORT: 5432
-      POSTGRES_DB_NAME: postgres
+      POSTGRES_USER: 'postgres'
+      POSTGRES_PASSWORD: 'docker'
+      POSTGRES_PORT: '5432'
+      POSTGRES_DB_NAME: 'postgres'
     ports:
-      - '5432:5432'
+      - 5435:5432
     volumes:
+      - ./tools:/docker-entrypoint-initdb.d
       - database:/var/lib/postgresql/data
   robofinance:
     image: robofinance:local
     build:
       context: ./
       dockerfile: Dockerfile
+    ports:
+      - 8082:8080
+    environment:
+      POSTGRES_HOST: 'db'
+      POSTGRES_PORT: '5432'
+      POSTGRES_DB_NAME: 'postgres'
+      POSTGRES_USERNAME: 'postgres'
+      POSTGRES_PASSWORD: 'docker'
     depends_on:
       - db
 volumes:

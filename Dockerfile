@@ -1,6 +1,4 @@
 FROM adoptopenjdk/openjdk11:jre-11.0.3_7-alpine
-#FROM app-registry01.corp.skbbank.ru/lab/adoptopenjdk/openjdk11:jre-11.0.3_7-alpine
-#FROM openjdk11:jre-11.0.3_7-alpine
 
 ARG JAR_FILE=robofinance.jar
 ARG APP_HOME=/opt/app

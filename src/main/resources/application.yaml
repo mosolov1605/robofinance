@@ -4,6 +4,7 @@ spring:
   main:
     banner-mode: off
   datasource:
+#    url: jdbc:postgresql://${POSTGRES_HOST}:${postgres.port}/${postgres.db-name}
     url: jdbc:postgresql://${postgres.host}:${postgres.port}/${postgres.db-name}
     username: ${postgres.username}
     password: ${postgres.password}
@@ -21,6 +22,7 @@ spring:
             non_contextual_creation: true
           time_zone: UTC
     open-in-view: false
+    database-platform: org.hibernate.dialect.PostgreSQLDialect
   mvc:
     locale: ru_RU
   batch:
