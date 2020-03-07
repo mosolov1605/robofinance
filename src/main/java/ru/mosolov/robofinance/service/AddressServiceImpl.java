@@ -12,7 +12,6 @@ import ru.mosolov.robofinance.service.dto.AddressInfo;
 import ru.mosolov.robofinance.service.dto.AddressSearch;
 
 import java.util.Optional;
-import java.util.concurrent.atomic.AtomicReference;
 
 @Service
 @RequiredArgsConstructor
@@ -45,7 +44,7 @@ public class AddressServiceImpl implements AddressService {
         return Optional.of(id)
                 .flatMap(addressRepository::findById)
                 .map(AddressInfo::applyTo)
-                .orElseThrow();
+                .orElseThrow(()->new AddressNotFoundException(String.valueOf(id)));
     }
 
     @Override
@@ -61,7 +60,9 @@ public class AddressServiceImpl implements AddressService {
     @Override
     @Transactional
     public Long remove(Long id) {
-        var address = Optional.of(id).flatMap(addressRepository::findById).orElseThrow();
+        var address = Optional.of(id)
+                .flatMap(addressRepository::findById)
+                .orElseThrow(() -> new AddressNotFoundException(String.valueOf(id)));
         addressRepository.delete(address);
         return address.getId();
     }

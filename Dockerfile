@@ -13,7 +13,7 @@ COPY build/libs/${JAR_FILE} ./app.jar
 
 EXPOSE 8080
 
-ENV JAVA_OPTS="-Xmx512m -Xms256m -Djava.security.egd=file:/dev/./urandom -Dfile.encoding=UTF-8"
+ENV JAVA_OPTS="-Xmx512m -Xms256m -Dfile.encoding=UTF-8"
 ENV APP_OPTS=""
 
 ENTRYPOINT java $JAVA_OPTS $APP_OPTS -jar app.jar

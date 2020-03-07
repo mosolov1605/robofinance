@@ -1,9 +1,10 @@
 package ru.mosolov.robofinance.service.dto;
 
-import com.sun.istack.NotNull;
 import lombok.Data;
 import lombok.experimental.FieldDefaults;
 import ru.mosolov.robofinance.domain.dto.AddressSource;
+
+import javax.validation.constraints.NotNull;
 
 import static lombok.AccessLevel.PRIVATE;
 
@@ -12,15 +13,15 @@ import static lombok.AccessLevel.PRIVATE;
 public class AddressInput implements AddressSource {
 
     Long id;
-//    @NotNull
+    @NotNull
     String country;
-//    @NotNull
+    @NotNull
     String region;
-//    @NotNull
+    @NotNull
     String city;
-//    @NotNull
+    @NotNull
     String street;
-//    @NotNull
+    @NotNull
     String house;
     String flat;
 }

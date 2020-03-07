@@ -25,7 +25,6 @@ public class CustomerServiceImpl implements CustomerService {
 
     private final CustomerRepository customerRepository;
     private final AddressRepository addressRepository;
-//    private final AddressService addressService;
 
     @Override
     @Transactional
@@ -52,7 +51,9 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Override
     public CustomerInfo find(Long id) {
-        return customerRepository.findById(id).map(CustomerInfo::applyTo).orElseThrow();
+        return customerRepository.findById(id)
+                .map(CustomerInfo::applyTo)
+                .orElseThrow(()-> new CustomerNotFoundException(String.valueOf(id)));
     }
 
     @Override
@@ -68,7 +69,9 @@ public class CustomerServiceImpl implements CustomerService {
     @Override
     @Transactional
     public Long remove(Long id) {
-        var customer = Optional.of(id).flatMap(customerRepository::findById).orElseThrow();
+        var customer = Optional.of(id)
+                .flatMap(customerRepository::findById)
+                .orElseThrow(() -> new CustomerNotFoundException(String.valueOf(id)));
         customerRepository.delete(customer);
         return customer.getId();
     }
@@ -79,19 +82,17 @@ public class CustomerServiceImpl implements CustomerService {
         Optional.of(source)
                 .map(function)
                 .map(Address::getId)
-                .ifPresent(id -> {
-                    Optional.of(addressRepository.findById(id))
-                            .ifPresentOrElse(d -> {
-                                address.set(d.get());
-                                exist[0] = true;
-                            }, () -> {
-                                Optional.of(addressRepository.findBySearch(AddressSearch.applyTo(function.apply(source))))
-                                        .ifPresent(s -> {
-                                            address.set(s);
-                                            exist[0] = true;
-                                        });
-                            });
-                });
+                .ifPresent(id -> Optional.of(addressRepository.findById(id))
+                        .ifPresentOrElse(d -> {
+                            address.set(d.get());
+                            exist[0] = true;
+                        }, () -> Optional.of(addressRepository.findBySearch(AddressSearch.applyTo(function.apply(source))))
+                                .ifPresent(s -> {
+                                    address.set(s);
+                                    exist[0] = true;
+                                })
+                        )
+                );
 
         if (exist[0]) {
             return;

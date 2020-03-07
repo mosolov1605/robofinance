@@ -13,7 +13,6 @@ import ru.mosolov.robofinance.utils.Gender;
 
 import javax.persistence.*;
 
-import static javax.persistence.EnumType.STRING;
 import static lombok.AccessLevel.PRIVATE;
 
 @Getter
