@@ -32,7 +32,13 @@ public class CustomerSearchExecutorImpl implements CustomerSearchExecutor {
         filter(cq, customerRoot, cb, search);
         cq.distinct(true).select(cb.construct(
                 CustomerInfo.class,
-                customerRoot.get(BaseEntity.Fields.id)
+                customerRoot.get(BaseEntity.Fields.id),
+                customerRoot.get(Customer.Fields.firstName),
+                customerRoot.get(Customer.Fields.middleName),
+                customerRoot.get(Customer.Fields.lastName),
+                customerRoot.get(Customer.Fields.gender),
+                customerRoot.get(Customer.Fields.address),
+                customerRoot.get(Customer.Fields.regAddress)
         ));
         TypedQuery<CustomerInfo> typedQuery = em.createQuery(cq);
         return typedQuery.getResultList();
