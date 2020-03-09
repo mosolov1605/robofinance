@@ -10,8 +10,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.test.web.servlet.MockMvc;
 import ru.mosolov.robofinance.service.CustomerService;
 import ru.mosolov.robofinance.service.dto.CustomerInfo;
+import ru.mosolov.robofinance.service.dto.CustomerSearch;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -64,9 +66,9 @@ public class CustomerControllerTests {
                 .build();
         CustomerInfo customer2 = CustomerInfo.builder()
                 .id(2L)
-                .firstName("Test")
-                .middleName("Test")
-                .lastName("Test")
+                .firstName("Test2")
+                .middleName("Test2")
+                .lastName("Test2")
                 .build();
         when(customerService.findAll(any(Pageable.class)))
                 .thenReturn(new PageImpl<>(Arrays.asList(customer1, customer2)));
@@ -79,6 +81,35 @@ public class CustomerControllerTests {
                         "{\"content\":[{\"id\":1,\"firstName\":\"Test\",\"middleName\":\"Test\",\"lastName\":\"Test\",\"gender\":null,\"address\":null,\"regAddress\":null},{\"id\":2,\"firstName\":\"Test\",\"middleName\":\"Test\",\"lastName\":\"Test\",\"gender\":null,\"address\":null,\"regAddress\":null}],\"pageable\":\"INSTANCE\",\"last\":true,\"totalPages\":1,\"totalElements\":2,\"number\":0,\"sort\":{\"unsorted\":true,\"sorted\":false,\"empty\":true},\"size\":2,\"numberOfElements\":2,\"first\":true,\"empty\":false}"
                 ));
     }
+
+    @Test
+    @SneakyThrows
+    public void findBySearch_shouldReturnResult_whenCustomersFound() {
+        // given
+        CustomerInfo customer1 = CustomerInfo.builder()
+                .id(1L)
+                .firstName("Test")
+                .middleName("Test")
+                .lastName("Test")
+                .build();
+        CustomerInfo customer2 = CustomerInfo.builder()
+                .id(2L)
+                .firstName("Test2")
+                .middleName("Test2")
+                .lastName("Test2")
+                .build();
+        when(customerService.findBySearch(any(CustomerSearch.class)))
+                .thenReturn(Collections.singletonList(customer1));
+
+        // expect
+        mvc.perform(get(apiPath("/search?firstName={firstName}&lastName={lastName}"), "Test", "Test"))
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(content().json(
+                        "[{\"id\":1,\"firstName\":\"Test\",\"middleName\":\"Test\",\"lastName\":\"Test\",\"gender\":null,\"address\":null,\"regAddress\":null}]"
+                ));
+    }
+
     private String apiPath(String s) {
         return BASE_API_URL + s;
     }
