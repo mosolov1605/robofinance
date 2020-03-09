@@ -33,7 +33,13 @@ public class CustomerServiceImpl implements CustomerService {
         AtomicReference<Address> addressAtomicReference = new AtomicReference<>();
         AtomicReference<Address> regAddressAtomicReference = new AtomicReference<>();
         resolveAddress(source, addressAtomicReference, CustomerSource::getAddress);
-        resolveAddress(source, regAddressAtomicReference, CustomerSource::getRegAddress);
+
+        if (source.getAddress().equals(source.getRegAddress())) {
+            regAddressAtomicReference = addressAtomicReference;
+        } else {
+            resolveAddress(source, regAddressAtomicReference, CustomerSource::getRegAddress);
+        }
+
         var address = addressAtomicReference.get();
         var regAddress = regAddressAtomicReference.get();
         addressRepository.saveAll(List.of(address, regAddress));
@@ -81,22 +87,16 @@ public class CustomerServiceImpl implements CustomerService {
         final boolean[] exist = new boolean[1];
         Optional.of(source)
                 .map(function)
-                .map(Address::getId)
-                .ifPresent(id -> Optional.of(addressRepository.findById(id))
-                        .ifPresentOrElse(d -> {
-                            address.set(d.get());
-                            exist[0] = true;
-                        }, () -> Optional.of(addressRepository.findBySearch(AddressSearch.applyTo(function.apply(source))))
-                                .ifPresent(s -> {
-                                    address.set(s);
-                                    exist[0] = true;
-                                })
-                        )
-                );
+                .map(Address::getId).flatMap(id -> Optional.of(addressRepository.findById(id))).ifPresent(d -> {
+            address.set(d.get());
+            exist[0] = true;
+        });
 
         if (exist[0]) {
             return;
         }
-        address.set(Address.applyTo(function.apply(source)));
+
+        Optional.ofNullable(addressRepository.findBySearch(AddressSearch.applyTo(function.apply(source))))
+                .ifPresentOrElse(address::set, () -> address.set(Address.applyTo(function.apply(source))));
     }
 }

@@ -1,9 +1,6 @@
 package ru.mosolov.robofinance.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.FieldNameConstants;
 import ru.mosolov.robofinance.domain.dto.CustomerSource;
@@ -23,6 +20,7 @@ import static lombok.AccessLevel.PRIVATE;
 @FieldNameConstants
 @Table(name = "customer")
 @FieldDefaults(level = PRIVATE)
+@EqualsAndHashCode(callSuper = false)
 public class Customer extends BaseEntity implements CustomerSource {
 
     @Column

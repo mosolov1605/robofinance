@@ -1,9 +1,6 @@
 package ru.mosolov.robofinance.domain;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.FieldNameConstants;
 import ru.mosolov.robofinance.domain.dto.AddressSource;
@@ -25,6 +22,7 @@ import static lombok.AccessLevel.PRIVATE;
 @FieldNameConstants
 @Table(name = "address")
 @FieldDefaults(level = PRIVATE)
+@EqualsAndHashCode (callSuper = false)
 public class Address extends BaseEntity implements AddressSource {
 
     @Column
@@ -39,10 +37,13 @@ public class Address extends BaseEntity implements AddressSource {
     String house;
     @Column
     String flat;
+
     @Column
+    @EqualsAndHashCode.Exclude
     final Instant created = Instant.now();
     @Column
     @Builder.Default
+    @EqualsAndHashCode.Exclude
     Instant modified = Instant.now();
 
     public static Address applyTo(AddressSource source) {
